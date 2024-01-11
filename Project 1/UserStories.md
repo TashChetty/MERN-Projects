@@ -1,0 +1,1 @@
+create user strories from the user perspective of what the solution must be
