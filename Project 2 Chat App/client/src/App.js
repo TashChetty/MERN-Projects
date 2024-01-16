@@ -1,7 +1,14 @@
 import Button from '@mui/material-next/Button';
-
+import { useEffect, useState } from 'react';
+import {io} from 'socket.io-client';
 
 function App() {
+const [socket, setSocket] = useState = null()
+  
+  useEffect(() => {
+    setSocket(io('http://localhost:4000'))
+  }, []);
+
   return (
     <div>
       Hello Socket
