@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import {io} from 'socket.io-client';
 
 function App() {
-const [socket, setSocket] = useState = null();
+const [socket, setSocket] = useState(null);
   
   useEffect(() => {
     setSocket(io('http://localhost:4000'))
