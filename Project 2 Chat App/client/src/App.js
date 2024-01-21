@@ -1,35 +1,29 @@
-import Button from '@mui/material/Button';
-import  TextField from '@mui/material/TextField';
-import Box from '@mui/material/Box';
-import { useEffect, useState } from 'react';
-import {io} from 'socket.io-client';
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import Cookies from "js-cookies";
+import { useEffect, useState } from "react";
+import { Outlet } from "react-router-dom";
+import { io } from "socket.io-client";
+import Header from "./components/Header";
 
 function App() {
-const [socket, setSocket] = useState(null);
-const [message, setMessage] = useState("");
-   
-  useEffect(() => {
-    setSocket(io('http://localhost:4000'))
-  }, []);
+  const [socket, setSocket] = useState(null);
+  const [userId, setUserId] = useState(null);
 
-  function handleForm(e){
-    e.preventDefault();
-  }
+  useEffect(() => {
+    setSocket(io("http://localhost:4000"));
+    const _userId = Cookies.getItem("userId");
+    if (_userId) setUserId(_userId);
+  }, []);
 
   return (
     <div>
-      
-      <Box cpmponent = "form"  onSubmit={handleForm}>
-      <TextField 
-      id ="standard-basic" 
-      size="small"
-      label="Standard" 
-      variant = "standard"
-      value={message}
-      onChange={(e) => setMessage(e.target.value)}
-      />
-      <Button variant = "text"  type = "submit">Send</Button>
-      </Box>
+      <Container>
+        <Header socket={socket} userId={userId} setUserId={setUserId} />
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <Outlet context={{ socket, userId }} />
+        </Box>
+      </Container>
     </div>
   );
 }
