@@ -1,46 +1,49 @@
-import express from "express";
+import express from 'express';
 import http from "http";
 import { Server } from "socket.io";
+import sockets from './socket/sockets.js';
+import mongoose from 'mongoose';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import router from './api/routes.js';
+import cors from 'cors'
+
+
+await mongoose.connect(
+    "mongodb+srv://tashchettydev:0000@cluster0.lfra5hh.mongodb.net/?retryWrites=true&w=majority"
+    )
 
 
 const app = express();
 const PORT = 4000;
-
 const httpServer = http.createServer(app);
+
 const io = new Server(httpServer, {
     cors: {
-        origin: ["http://localhost:3000"],
-    },
-});
+        origin: ['https://localhost:3000'], 
+    }
+})
 
-import path from "path";
-import { fileURLToPath } from "url";
-const __filename = fileURLToPath(import.meta.url);
+
+
+
+
+
+const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename);
 
-app.get('/', (req, res) => {
-   // res.json({ data: "hello world from socket" });
-   res.sendFile(__dirname + "/index.html");
-});
+app.use(cors());
 
-io.on('connection', (socket) => {
-    //console.log('Connection is ready');
-    socket.on("send-message", (data) => {
-        socket.broadcast.emit("message-from-server", data);
-    });
+app.get("/", (req, res) => {
+    res.sendFile(__dirname + "/index.html");
+})
 
-    socket.on("typing-started", () => {
-        socket.broadcast.emit("typing-started-from-server");
-    });
+app.use('/', router);
 
-    socket.on('disconnect', (socket) => {
-        console.log('User left.');
-    //  socket.on("send-message", (data) => {
-    //    socket.emit("message-from-server", data);
-    //})
-    });
-});
+io.on('connection',sockets)
+
+
 
 httpServer.listen(PORT, () => {
-    console.log("Server is running at http://localhost:4000")
-});
+    console.log("server is running at http://localhost:4000")
+})
